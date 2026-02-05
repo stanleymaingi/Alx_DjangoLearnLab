@@ -1,0 +1,11 @@
+# Ignore VS Code / Visual Studio files
+.vs/
+*.vsix
+*.suo
+*.user
+*.userosscache
+*.sln
+*.db
+__pycache__/
+db.sqlite3
+*.pyc
