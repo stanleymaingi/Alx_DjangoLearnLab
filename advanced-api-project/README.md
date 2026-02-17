@@ -39,7 +39,7 @@ This project is designed to handle **Authors and Books**:
 git clone https://github.com/stanleymaingi/Alx_DjangoLearnLab.git
 cd advanced-api-project
 
-## This stages all changes only inside advanced-api-project.
+## This stages all changes only inside advanced-api-project
 
 
 git add advanced-api-project
@@ -47,3 +47,4 @@ git add advanced-api-project
 git commit -m "Update advanced-api-project: generic views, custom serializers, permissions"
 
 git push origin main
+
