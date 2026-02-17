@@ -1,6 +1,10 @@
 from django.urls import path # type: ignore
 from .views import (
-    BookListView, BookDetailView, BookCreateView, BookUpdateView, BookDeleteView
+    BookListView,
+    BookDetailView,
+    BookCreateView,
+    BookUpdateView,
+    BookDeleteView
 )
 
 urlpatterns = [
