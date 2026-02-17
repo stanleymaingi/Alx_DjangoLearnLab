@@ -48,3 +48,20 @@ git commit -m "Update advanced-api-project: generic views, custom serializers, p
 
 git push origin main
 
+
+
+git add advanced-api-project/advanced_api_project/urls.py
+git add advanced-api-project/api/serializers.py
+git add advanced-api-project/api/urls.py
+git add advanced-api-project/api/views.py
+git add advanced-api-project/urls.py
+git add api_project/api/views.py
+git add api_project/api_project/settings.py
+git add api_project/api_project/urls.py
+
+
+git commit -m "Update API views, urls, serializers, and project settings"
+
+
+git push origin main --force
+
