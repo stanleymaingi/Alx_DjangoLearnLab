@@ -22,3 +22,15 @@ class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = ['id', 'name', 'books']
+
+class BookListView(generics.ListAPIView): # type: ignore
+    serializer_class = BookSerializer
+    permission_classes = [AllowAny] # type: ignore
+
+    def get_queryset(self):
+        queryset = Book.objects.all()
+        author_name = self.request.query_params.get('author', None)
+        if author_name:
+            queryset = queryset.filter(author__name__icontains=author_name)
+        return queryset
+
