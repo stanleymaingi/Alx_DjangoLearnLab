@@ -1,53 +1,44 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .forms import CustomUserCreationForm
+from django.views.generic import CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy
+from .models import Post, Comment
+from .forms import CommentForm
 
-# Registration view
-def register_view(request):
-    if request.method == "POST":  # explicit POST
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()  # explicit save()
-            login(request, user)
-            messages.success(request, "Registration successful!")
-            return redirect('home')
-        else:
-            messages.error(request, "Registration failed. Please correct the errors.")
-    else:
-        form = CustomUserCreationForm()
-    return render(request, "blog/register.html", {"form": form})
+# Create a comment (logged-in users only)
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/add_comment.html'
 
-# Login view
-def login_view(request):
-    if request.method == "POST":  # explicit POST
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            messages.success(request, f"Welcome, {user.username}!")
-            return redirect("home")
-        else:
-            messages.error(request, "Invalid username or password.")
-    else:
-        form = AuthenticationForm()
-    return render(request, "blog/login.html", {"form": form})
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.post = Post.objects.get(pk=self.kwargs['post_id'])
+        return super().form_valid(form)
 
-# Logout view
-def logout_view(request):
-    logout(request)
-    messages.info(request, "You have successfully logged out.")
-    return redirect("login")
+    def get_success_url(self):
+        return reverse_lazy('post_detail', kwargs={'pk': self.kwargs['post_id']})
 
-# Profile view
-@login_required
-def profile_view(request):
-    if request.method == "POST":  # explicit POST
-        email = request.POST.get("email")
-        if email:
-            request.user.email = email
-            request.user.save()  # explicit save()
-            messages.success(request, "Profile updated successfully!")
-    return render(request, "blog/profile.html", {"user": request.user})
+# Update a comment (only author can edit)
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/edit_comment.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return reverse_lazy('post_detail', kwargs={'pk': self.get_object().post.pk})
+
+# Delete a comment (only author can delete)
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/delete_comment.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return reverse_lazy('post_detail', kwargs={'pk': self.get_object().post.pk})
