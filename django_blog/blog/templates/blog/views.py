@@ -5,49 +5,49 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CustomUserCreationForm
 
-# User registration
+# Registration view
 def register_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":  # explicit POST
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)  # log the user in immediately
+            user = form.save()  # explicit save()
+            login(request, user)
             messages.success(request, "Registration successful!")
             return redirect('home')
         else:
-            messages.error(request, "Registration failed. Check the errors below.")
+            messages.error(request, "Registration failed. Please correct the errors.")
     else:
         form = CustomUserCreationForm()
-    return render(request, 'blog/register.html', {'form': form})
+    return render(request, "blog/register.html", {"form": form})
 
-# User login
+# Login view
 def login_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":  # explicit POST
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
             messages.success(request, f"Welcome, {user.username}!")
-            return redirect('home')
+            return redirect("home")
         else:
             messages.error(request, "Invalid username or password.")
     else:
         form = AuthenticationForm()
-    return render(request, 'blog/login.html', {'form': form})
+    return render(request, "blog/login.html", {"form": form})
 
-# User logout
+# Logout view
 def logout_view(request):
     logout(request)
-    messages.info(request, "Logged out successfully!")
-    return redirect('login')
+    messages.info(request, "You have successfully logged out.")
+    return redirect("login")
 
-# User profile
+# Profile view
 @login_required
 def profile_view(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
+    if request.method == "POST":  # explicit POST
+        email = request.POST.get("email")
         if email:
             request.user.email = email
-            request.user.save()
+            request.user.save()  # explicit save()
             messages.success(request, "Profile updated successfully!")
-    return render(request, 'blog/profile.html', {'user': request.user})
+    return render(request, "blog/profile.html", {"user": request.user})
