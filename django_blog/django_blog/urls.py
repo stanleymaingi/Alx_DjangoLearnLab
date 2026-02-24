@@ -17,9 +17,10 @@ Including another URLconf
 from django.urls import path
 from .views import (
     PostListView, PostDetailView,
-    PostCreateView, PostUpdateView, PostDeleteView
+    PostCreateView, PostUpdateView, PostDeleteView,
+    post/<int:pk>/delete/",
+    post/<int:pk>/update/", "post/new/
 )
-
 urlpatterns = [
     path('posts/', PostListView.as_view(), name='post_list'),        # list of all posts
     path('post/new/', PostCreateView.as_view(), name='post_create'),  # create new post
@@ -29,3 +30,4 @@ urlpatterns = [
     path("post/<int:pk>/delete/", "post/<int:pk>/update/", "post/new/"),
     post/<int:pk>/delete/", "post/<int:pk>/update/", "post/new/
 ]
+
