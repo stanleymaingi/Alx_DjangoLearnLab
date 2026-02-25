@@ -38,3 +38,13 @@ GET /api/comments/
 POST /api/comments/
 PUT /api/comments/{id}/
 DELETE /api/comments/{id}/
+
+## Follow System
+
+POST /api/accounts/follow/{user_id}/
+POST /api/accounts/unfollow/{user_id}/
+
+## Feed
+
+GET /api/feed/
+Returns posts from users the authenticated user follows.
