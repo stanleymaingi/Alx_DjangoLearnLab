@@ -87,3 +87,4 @@ class UnlikePostView(APIView):
         return Response({"detail": "You have not liked this post."}, status=status.HTTP_400_BAD_REQUEST)
 
 Post.objects.filter(author__in=following_users).order_by
+generics.get_object_or_404(Post, pk=pk)
